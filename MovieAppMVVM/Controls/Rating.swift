@@ -8,13 +8,34 @@
 import SwiftUI
 
 struct Rating: View {
+    
+    @Binding var rating: Int?
+    
+    
+    private func starType(index: Int) -> String {
+        if let rating = self.rating {
+            return index <= rating ? "star.fill" : "star"
+        }
+        return "star"
+    }
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack{
+            ForEach(1...10, id: \.self) {index in
+                Image(systemName: self.starType(index: index))
+                    .foregroundColor(Color.orange)
+                    .onTapGesture {
+                        self.rating = index
+                    }
+            }
+        }
     }
 }
 
 struct Rating_Previews: PreviewProvider {
+    
+    
     static var previews: some View {
-        Rating()
+        Rating(rating: .constant(3))
     }
 }

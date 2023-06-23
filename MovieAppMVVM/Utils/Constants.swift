@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+struct Constants {
+    static let MDB_API_KEY = "8ea3ee50"
+}

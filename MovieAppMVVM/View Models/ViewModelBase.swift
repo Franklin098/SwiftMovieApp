@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+enum LoadingState {
+    case none, failed, loading, success
+}
+
+class ViewModelBase: ObservableObject {
+    @Published var loadingState: LoadingState = .none
+}
