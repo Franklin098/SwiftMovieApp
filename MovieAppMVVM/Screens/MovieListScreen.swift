@@ -14,26 +14,18 @@ struct MovieListScreen: View {
     
     @State private var movieName: String = ""
     
+    @Environment(\.dismissSearch) var dismissSearch
+    @Environment(\.isSearching) var isSearching
+    
+    let defaultMovie = "lego"
+    
     init() {
         self.movieListVM = MovieListViewModel()
+        self.movieListVM.searchByName(self.defaultMovie)
     }
     
     var body: some View {
         VStack{
-        
-            
-            TextField("Search", text: $movieName,
-                      onEditingChanged: { _ in },
-                      onCommit: {
-                            // when user hits done
-                            self.movieListVM.searchByName(self.movieName)
-                        }
-            ).textFieldStyle(.roundedBorder)
-                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
-            
-            Spacer()
-                .navigationTitle("Movies")
-            
             
             if self.movieListVM.loadingState == .success {
                 MovieListView(movies: self.movieListVM.movies)
@@ -44,9 +36,18 @@ struct MovieListScreen: View {
                 LoadingView()
                 Spacer()
             }
-
-
+ 
         }
+        .navigationTitle("Movies")
+        .searchable(text: $movieName)
+        .onSubmit(of: .search, {
+            self.movieListVM.searchByName(self.movieName)
+        })
+        .onChange(of: self.movieName, perform: { newValue in
+            if newValue.isEmpty && !isSearching {
+                self.movieListVM.searchByName(self.defaultMovie)
+            }
+        })
         .embedNavigationView()
     }
 }

@@ -56,8 +56,6 @@ class MovieDBService {
                 return completion(.failure(.noData))
             }
             
-            print("detail data \(data)")
-            
             guard let movieResponse = try? JSONDecoder().decode(MovieDetail.self, from: data) else {
                 return completion(.failure(.decodingError))
             }
