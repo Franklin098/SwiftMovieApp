@@ -41,4 +41,30 @@ class MovieDBService {
         .resume() // make sure to call resume, or the request won't go anywhere
         
     }
+    
+    func getMovieDetailBy(imdbId: String, completion: @escaping(Result<MovieDetail, NetworkError>) -> Void){
+        
+        guard let url = URL.forMoviesById(imdbId: imdbId) else {
+            return completion(.failure(.badURL))
+        }
+        
+        print("detail url \(url)")
+        
+        URLSession.shared.dataTask(with: url) { optData , response , error in
+            
+            guard let data = optData, error == nil else {
+                return completion(.failure(.noData))
+            }
+            
+            print("detail data \(data)")
+            
+            guard let movieResponse = try? JSONDecoder().decode(MovieDetail.self, from: data) else {
+                return completion(.failure(.decodingError))
+            }
+            
+            completion(.success(movieResponse))
+            
+            
+        }.resume()
+    }
 }
